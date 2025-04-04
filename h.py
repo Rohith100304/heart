@@ -44,6 +44,9 @@ def get_user_input():
         chol = st.number_input('Serum Cholesterol (mg/dl)', min_value=100, max_value=600, value=200)
         thalach = st.number_input('Maximum Heart Rate Achieved', min_value=70, max_value=220, value=150)
         oldpeak = st.number_input('ST Depression Induced by Exercise', min_value=0.0, max_value=6.2, value=1.0)
+        ca = st.selectbox('Number of Major Vessels Colored by Fluoroscopy', [0, 1, 2, 3])
+        thal = st.selectbox('Thalassemia', 
+                           ['Normal', 'Fixed Defect', 'Reversible Defect'])
     
     with col2:
         # Categorical inputs
@@ -56,9 +59,7 @@ def get_user_input():
         exang = st.selectbox('Exercise Induced Angina', ['No', 'Yes'])
         slope = st.selectbox('Slope of Peak Exercise ST Segment', 
                             ['Upsloping', 'Flat', 'Downsloping'])
-        ca = st.selectbox('Number of Major Vessels Colored by Fluoroscopy', [0, 1, 2, 3])
-        thal = st.selectbox('Thalassemia', 
-                           ['Normal', 'Fixed Defect', 'Reversible Defect'])
+        
     
     # Convert categorical inputs to numerical values
     sex = 1 if sex == 'Male' else 0
