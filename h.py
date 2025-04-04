@@ -43,12 +43,12 @@ def get_user_input():
         chol = st.number_input('Serum Cholesterol (mg/dl)', min_value=100, max_value=600, value=200)
         thalach = st.number_input('Maximum Heart Rate Achieved', min_value=70, max_value=220, value=150)
         oldpeak = st.number_input('ST Depression Induced by Exercise', min_value=0.0, max_value=6.2, value=1.0)
-    
-    with col2:
-        # Categorical inputs
         sex = st.selectbox('Sex', ['Male', 'Female'])
         cp = st.selectbox('Chest Pain Type', 
                          ['Typical Angina', 'Atypical Angina', 'Non-anginal Pain', 'Asymptomatic'])
+    with col2:
+        # Categorical inputs
+       
         fbs = st.selectbox('Fasting Blood Sugar > 120 mg/dl', ['No', 'Yes'])
         restecg = st.selectbox('Resting Electrocardiographic Results', 
                               ['Normal', 'ST-T Wave Abnormality', 'Left Ventricular Hypertrophy'])
