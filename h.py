@@ -107,7 +107,13 @@ def main():
         st.subheader("Heart Disease Dataset")
         st.write(data)
         st.markdown(filedownload(data, 'heart.csv'), unsafe_allow_html=True)
-    
+        
+    st.sidebar.download_button(
+    label="Download Dataset",
+    #data=df.to_csv(index=False).encode("utf-8"),
+    file_name="heart.csv",
+    mime="text/csv"
+    )
     st.sidebar.markdown("### Download Model")
     st.sidebar.markdown(pkl_download('heart', 'heart_model.pkl'), unsafe_allow_html=True)
     
