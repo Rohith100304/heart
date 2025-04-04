@@ -103,7 +103,7 @@ def main():
     # Sidebar options
     st.sidebar.title("Options")
     
-    if st.sidebar.checkbox("View Dataset"):
+    if st.sidebar.button("View Dataset"):
         st.subheader("Heart Disease Dataset")
         st.write(data)
         st.markdown(filedownload(data, 'heart.csv'), unsafe_allow_html=True)
