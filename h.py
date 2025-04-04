@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from pycaret.classification import load_model, predict_model
 import base64
+import io
 
 # Load the saved model and dataset
 @st.cache_resource
@@ -16,18 +17,18 @@ def load_dataset():
 model = load_heart_model()
 data = load_dataset()
 
-# File download function
-def filedownload(df, filename):
-    csv = df.to_csv(index=False)
+# File download functions
+def download_dataset():
+    csv = data.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()
-    href = f'<a href="data:file/csv;base64,{b64}" download="{filename}">Download {filename}</a>'
+    href = f'data:file/csv;base64,{b64}'
     return href
 
-def pkl_download(model, filename):
-    with open(f'{model}.pkl', 'rb') as f:
+def download_model():
+    with open('heart.pkl', 'rb') as f:
         bytes = f.read()
     b64 = base64.b64encode(bytes).decode()
-    href = f'<a href="data:file/pkl;base64,{b64}" download="{filename}">Download {filename}</a>'
+    href = f'data:file/pkl;base64,{b64}'
     return href
 
 # Create a function to get user input in main area
@@ -43,12 +44,12 @@ def get_user_input():
         chol = st.number_input('Serum Cholesterol (mg/dl)', min_value=100, max_value=600, value=200)
         thalach = st.number_input('Maximum Heart Rate Achieved', min_value=70, max_value=220, value=150)
         oldpeak = st.number_input('ST Depression Induced by Exercise', min_value=0.0, max_value=6.2, value=1.0)
+    
+    with col2:
+        # Categorical inputs
         sex = st.selectbox('Sex', ['Male', 'Female'])
         cp = st.selectbox('Chest Pain Type', 
                          ['Typical Angina', 'Atypical Angina', 'Non-anginal Pain', 'Asymptomatic'])
-    with col2:
-        # Categorical inputs
-       
         fbs = st.selectbox('Fasting Blood Sugar > 120 mg/dl', ['No', 'Yes'])
         restecg = st.selectbox('Resting Electrocardiographic Results', 
                               ['Normal', 'ST-T Wave Abnormality', 'Left Ventricular Hypertrophy'])
@@ -103,19 +104,29 @@ def main():
     # Sidebar options
     st.sidebar.title("Options")
     
+    # View Dataset button
     if st.sidebar.button("View Dataset"):
         st.subheader("Heart Disease Dataset")
         st.write(data)
-        st.markdown(filedownload(data, 'heart.csv'), unsafe_allow_html=True)
-        
+    
+    # Download Dataset button
+    dataset_download = download_dataset()
     st.sidebar.download_button(
-    label="Download Dataset",
-    #data=df.to_csv(index=False).encode("utf-8"),
-    file_name="heart.csv",
-    mime="text/csv"
+        label="Download Dataset",
+        data=data.to_csv(index=False),
+        file_name='heart_dataset.csv',
+        mime='text/csv'
     )
-    st.sidebar.markdown("### Download Model")
-    st.sidebar.markdown(pkl_download('heart', 'heart_model.pkl'), unsafe_allow_html=True)
+    
+    # Download Model button
+    with open('heart.pkl', 'rb') as f:
+        model_bytes = f.read()
+    st.sidebar.download_button(
+        label="Download Model",
+        data=model_bytes,
+        file_name='heart_model.pkl',
+        mime='application/octet-stream'
+    )
     
     # Get user input in main area
     user_input = get_user_input()
@@ -142,8 +153,8 @@ def main():
             st.info('Maintain a healthy lifestyle for continued heart health.')
             
         # Show prediction details expander
-        #with st.expander("Show detailed prediction metrics"):
-         #   st.write(prediction)
+        with st.expander("Show detailed prediction metrics"):
+            st.write(prediction)
 
 if __name__ == '__main__':
     main()
