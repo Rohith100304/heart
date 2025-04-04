@@ -136,8 +136,8 @@ def main():
             st.info('Maintain a healthy lifestyle for continued heart health.')
             
         # Show prediction details expander
-        with st.expander("Show detailed prediction metrics"):
-            st.write(prediction)
+        #with st.expander("Show detailed prediction metrics"):
+         #   st.write(prediction)
 
 if __name__ == '__main__':
     main()
