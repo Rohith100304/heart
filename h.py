@@ -5,7 +5,6 @@ from pycaret.classification import load_model, predict_model
 import base64
 import io
 
-# Load the saved model and dataset
 @st.cache_resource
 def load_heart_model():
     return load_model('heart')
@@ -17,7 +16,6 @@ def load_dataset():
 model = load_heart_model()
 data = load_dataset()
 
-# File download functions
 def download_dataset():
     csv = data.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()
@@ -31,14 +29,12 @@ def download_model():
     href = f'data:file/pkl;base64,{b64}'
     return href
 
-# Create a function to get user input in main area
 def get_user_input():
     st.header("Patient Information Form")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        # Numeric inputs
         age = st.number_input('Age', min_value=20, max_value=100, value=50)
         trestbps = st.number_input('Resting Blood Pressure (mm Hg)', min_value=90, max_value=200, value=120)
         chol = st.number_input('Serum Cholesterol (mg/dl)', min_value=100, max_value=600, value=200)
@@ -49,7 +45,6 @@ def get_user_input():
                            ['Normal', 'Fixed Defect', 'Reversible Defect'])
     
     with col2:
-        # Categorical inputs
         sex = st.selectbox('Sex', ['Male', 'Female'])
         cp = st.selectbox('Chest Pain Type', 
                          ['Typical Angina', 'Atypical Angina', 'Non-anginal Pain', 'Asymptomatic'])
@@ -61,7 +56,6 @@ def get_user_input():
                             ['Upsloping', 'Flat', 'Downsloping'])
         
     
-    # Convert categorical inputs to numerical values
     sex = 1 if sex == 'Male' else 0
     cp_mapping = {'Typical Angina': 0, 'Atypical Angina': 1, 'Non-anginal Pain': 2, 'Asymptomatic': 3}
     cp = cp_mapping[cp]
@@ -74,7 +68,6 @@ def get_user_input():
     thal_mapping = {'Normal': 1, 'Fixed Defect': 2, 'Reversible Defect': 3}
     thal = thal_mapping[thal]
     
-    # Store a dictionary into a dataframe
     user_data = {
         'age': age,
         'sex': sex,
@@ -95,22 +88,18 @@ def get_user_input():
     return features
 
 def main():
-    # Title
     st.title('Heart Disease Prediction App')
     st.write("""
     This app predicts the likelihood of having heart disease based on patient information.
     Please fill out the form below and click the 'Predict' button.
     """)
     
-    # Sidebar options
     st.sidebar.title("Options")
     
-    # View Dataset button
     if st.sidebar.button("View Dataset"):
         st.subheader("Heart Disease Dataset")
         st.write(data)
     
-    # Download Dataset button
     dataset_download = download_dataset()
     st.sidebar.download_button(
         label="Download Dataset",
@@ -119,7 +108,6 @@ def main():
         mime='text/csv'
     )
     
-    # Download Model button
     with open('heart.pkl', 'rb') as f:
         model_bytes = f.read()
     st.sidebar.download_button(
@@ -129,19 +117,18 @@ def main():
         mime='application/octet-stream'
     )
     
-    # Get user input in main area
     user_input = get_user_input()
     
-    # Display user input
+
     st.subheader('Patient Input Summary')
     st.write(user_input)
     
-    # Prediction button
+    
     if st.button('Predict Heart Disease Risk'):
-        # Make prediction
+        
         prediction = predict_model(model, data=user_input)
         
-        # Display prediction
+        
         st.subheader('Prediction Result')
         prediction_value = prediction['prediction_label'][0]
         prediction_score = prediction['prediction_score'][0]
@@ -153,9 +140,7 @@ def main():
             st.success(f'**Low risk of heart disease** (Probability: {1 - prediction_score:.2%})')
             st.info('Maintain a healthy lifestyle for continued heart health.')
             
-        # Show prediction details expander
-        with st.expander("Show detailed prediction metrics"):
-            st.write(prediction)
+        
 
 if __name__ == '__main__':
     main()
